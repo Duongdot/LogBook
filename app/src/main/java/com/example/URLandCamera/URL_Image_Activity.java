@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class URL_MainActivity extends AppCompatActivity {
+public class URL_Image_Activity extends AppCompatActivity {
 
     Button btnAdd, btnPrev, btnNext, btnCamera;
     EditText inputURL;
@@ -36,18 +36,16 @@ public class URL_MainActivity extends AppCompatActivity {
     ArrayList<String> imageURLs = new ArrayList<>();
 
     private int currentIndex = 0;
-    private static final String FILE_NAME = "URLs.txt";
+    private static final String FILE_NAME = "URLFile.txt";
 
     // Regex pattern for URL validation
-    String regex = "(https?:\\/\\/.*\\.(?:png|jpg))"; //regex for image url
+    String regex = "(https?:\\/\\/.*\\.(?:png|jpg|gif))"; //regex for image url
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_main);
-
-
-        // retrieve all ui elements on the form
+        // Retrieve all ui elements on the form
         findAllElements();
         try {
             loadURLs();
@@ -60,7 +58,6 @@ public class URL_MainActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Read file error, file = " + FILE_NAME, Toast.LENGTH_SHORT).show();
         }
-
         // load URL into ImageView by using Glide
         setImage();
         whenClickNext();
@@ -71,8 +68,7 @@ public class URL_MainActivity extends AppCompatActivity {
 
     private void whenClickCamera() {
         // Switch to Camera Activity
-        btnCamera.setOnClickListener(view -> startActivity(new Intent(URL_MainActivity.this, Camera_MainActivity.class)));
-
+        btnCamera.setOnClickListener(view -> startActivity(new Intent(URL_Image_Activity.this, CameraCapture_Activity.class)));
     }
 
     private void whenClickAdd() {
@@ -80,11 +76,11 @@ public class URL_MainActivity extends AppCompatActivity {
             String imageURL = inputURL.getText().toString().trim();
             Pattern p = Pattern.compile(regex);
             Matcher image = p.matcher(imageURL);
-            if(imageURL.isEmpty()){
+            if (imageURL.isEmpty()) {
                 inputURL.setError("Please enter a URL");
                 inputURL.requestFocus();
-            }else{
-                if(image.matches()){
+            } else {
+                if (image.matches()) {
                     imageURLs.add(imageURL);
                     try {
                         saveToFile(imageURL);
@@ -98,7 +94,7 @@ public class URL_MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                         Toast.makeText(this, "Save File Error", Toast.LENGTH_SHORT).show();
                     }
-                }else{
+                } else {
                     inputURL.setError("Please enter invalid URL");
                     inputURL.requestFocus();
                 }
@@ -189,10 +185,10 @@ public class URL_MainActivity extends AppCompatActivity {
                 imageView.setImageResource(0);
                 removeFile();
                 currentIndex = 0;
-                Toast.makeText(URL_MainActivity.this, "All Images deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(URL_Image_Activity.this, "All Images deleted", Toast.LENGTH_SHORT).show();
             }
             //Refresh Activity
-            Intent intent = new Intent(URL_MainActivity.this, URL_MainActivity.class);
+            Intent intent = new Intent(URL_Image_Activity.this, URL_Image_Activity.class);
             startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             finish();

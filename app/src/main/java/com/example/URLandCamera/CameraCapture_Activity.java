@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
-public class Camera_MainActivity extends AppCompatActivity {
+public class CameraCapture_Activity extends AppCompatActivity {
     private PreviewView previewView;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA"};
     private ImageCapture imageCapture;
@@ -141,16 +141,16 @@ public class Camera_MainActivity extends AppCompatActivity {
 
                         List<String> imageAbsolutePaths = getImageAbsolutePaths();
                         // display recent captured photo
-                        Glide.with(Camera_MainActivity.this).load(imageAbsolutePaths.get(0))
+                        Glide.with(CameraCapture_Activity.this).load(imageAbsolutePaths.get(0))
                                 .centerCrop()
                                 .into(imageView);
                         itemLabel.setText(outputFileResults.getSavedUri().getPath());
-                        Toast.makeText(Camera_MainActivity.this, "Photo has been saved successfully. " + imageAbsolutePaths.size() + "@" + outputFileResults.getSavedUri().getPath(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraCapture_Activity.this, "Photo has been saved successfully. " + imageAbsolutePaths.size() + "@" + outputFileResults.getSavedUri().getPath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(ImageCaptureException exception) {
-                        Toast.makeText(Camera_MainActivity.this, "Error saving photo: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraCapture_Activity.this, "Error saving photo: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -161,7 +161,7 @@ public class Camera_MainActivity extends AppCompatActivity {
         final int count = imageAbsolutePaths.size();
 
         if (count == 0) {
-            Toast.makeText(Camera_MainActivity.this, "No photo found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CameraCapture_Activity.this, "Not photo found", Toast.LENGTH_SHORT).show();
         } else {
 
             if (currentIndex == count) {
