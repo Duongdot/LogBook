@@ -141,7 +141,7 @@ public class CameraCapture_Activity extends AppCompatActivity {
 
                         List<String> imageAbsolutePaths = getImageAbsolutePaths();
                         // display recent captured photo
-                        Glide.with(CameraCapture_Activity.this).load(imageAbsolutePaths.get(0))
+                        Glide.with(CameraCapture_Activity.this).load(imageAbsolutePaths.size()-1)
                                 .centerCrop()
                                 .into(imageView);
                         itemLabel.setText(outputFileResults.getSavedUri().getPath());
@@ -167,7 +167,7 @@ public class CameraCapture_Activity extends AppCompatActivity {
             if (currentIndex == count) {
                 currentIndex = 0;
             }
-            if (currentIndex < 0) {
+            else if (currentIndex < 0) {
                 currentIndex = count - 1;
             }
             final String imagePath = imageAbsolutePaths.get(currentIndex);
@@ -180,10 +180,10 @@ public class CameraCapture_Activity extends AppCompatActivity {
 
     private List<String> getImageAbsolutePaths() {
         final List<String> paths = new ArrayList();
-        final Uri uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        final Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         final String[] projection = {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN + " DESC";
+        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
         final Cursor cursor = this.getContentResolver().query(uri, projection, null,
                 null, orderBy);
         final int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);

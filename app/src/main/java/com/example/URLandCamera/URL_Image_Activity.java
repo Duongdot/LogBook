@@ -45,8 +45,13 @@ public class URL_Image_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_url_main);
-        // Retrieve all ui elements on the form
-        findAllElements();
+        // Retrieve all ui elements on the form findViewById
+        btnAdd = findViewById(R.id.btnAdd);
+        btnPrev = findViewById(R.id.btnPrev);
+        btnNext = findViewById(R.id.btnNext);
+        btnCamera = findViewById(R.id.btnCamera);
+        inputURL = findViewById(R.id.inputURL);
+        imageView = findViewById(R.id.imageCamera);
         try {
             loadURLs();
             if (imageURLs.size() > 0 && imageURLs.size() != 1) {
@@ -102,7 +107,6 @@ public class URL_Image_Activity extends AppCompatActivity {
         });
     }
 
-
     private void saveToFile(String url) throws IOException {
         FileOutputStream fileOutputStream = getApplicationContext().openFileOutput(FILE_NAME, Context.MODE_APPEND);
         OutputStreamWriter outputStreamWriter = new OutputStreamWriter(fileOutputStream);
@@ -113,21 +117,6 @@ public class URL_Image_Activity extends AppCompatActivity {
         bufferedWriter.close();
         outputStreamWriter.close();
     }
-
-    private void whenClickPrevious() {
-        btnPrev.setOnClickListener(v -> {
-            currentIndex--;
-            setImage();
-        });
-    }
-
-    private void whenClickNext() {
-        btnNext.setOnClickListener(v -> {
-            currentIndex++;
-            setImage();
-        });
-    }
-
 
     private void loadURLs() throws IOException {
         FileInputStream fileInputStream = getApplicationContext().openFileInput(FILE_NAME);
@@ -157,14 +146,18 @@ public class URL_Image_Activity extends AppCompatActivity {
         }
     }
 
-    private void findAllElements() {
-        // findViewById
-        btnAdd = findViewById(R.id.btnAdd);
-        btnPrev = findViewById(R.id.btnPrev);
-        btnNext = findViewById(R.id.btnNext);
-        btnCamera = findViewById(R.id.btnCamera);
-        inputURL = findViewById(R.id.inputURL);
-        imageView = findViewById(R.id.imageCamera);
+    private void whenClickPrevious() {
+        btnPrev.setOnClickListener(v -> {
+            currentIndex--;
+            setImage();
+        });
+    }
+
+    private void whenClickNext() {
+        btnNext.setOnClickListener(v -> {
+            currentIndex++;
+            setImage();
+        });
     }
 
     @Override
