@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
@@ -30,6 +29,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
@@ -40,7 +40,6 @@ public class CameraCapture_Activity extends AppCompatActivity {
     private ImageView imageView;
     private TextView itemLabel;
     private int currentIndex = -1;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +71,6 @@ public class CameraCapture_Activity extends AppCompatActivity {
             setAnimationLeftToRight();
             setImageFromStorage();
         });
-
     }
 
     @Override
@@ -87,7 +85,6 @@ public class CameraCapture_Activity extends AppCompatActivity {
 
     }
 
-
     private boolean allPermissionsGranted() {
         for (String permission : REQUIRED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
@@ -99,7 +96,6 @@ public class CameraCapture_Activity extends AppCompatActivity {
 
     public void startCamera() {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
-
         cameraProviderFuture.addListener(() -> {
             try {
                 // Camera provider is now guaranteed to be available
@@ -116,7 +112,7 @@ public class CameraCapture_Activity extends AppCompatActivity {
                 // Connect the preview use case to the previewView
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
                 // Attach use cases to the camera with the same lifecycle owner
-                Camera camera = cameraProvider.bindToLifecycle((this), cameraSelector, preview, imageCapture);
+                cameraProvider.bindToLifecycle((this), cameraSelector, preview, imageCapture);
             } catch (InterruptedException | ExecutionException e) {
                 // handle InterruptedException.
                 Toast.makeText(this, "Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
@@ -137,19 +133,18 @@ public class CameraCapture_Activity extends AppCompatActivity {
         imageCapture.takePicture(outputFileOptions, getExecutor(),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
-                    public void onImageSaved(ImageCapture.OutputFileResults outputFileResults) {
-
+                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         List<String> imageAbsolutePaths = getImageAbsolutePaths();
                         // display recent captured photo
-                        Glide.with(CameraCapture_Activity.this).load(imageAbsolutePaths.size()-1)
+                        Glide.with(CameraCapture_Activity.this).load(imageAbsolutePaths.get(imageAbsolutePaths.size() - 1))
                                 .centerCrop()
                                 .into(imageView);
-                        itemLabel.setText(outputFileResults.getSavedUri().getPath());
+                        itemLabel.setText(Objects.requireNonNull(outputFileResults.getSavedUri()).getPath());
                         Toast.makeText(CameraCapture_Activity.this, "Photo has been saved successfully. " + imageAbsolutePaths.size() + "@" + outputFileResults.getSavedUri().getPath(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
-                    public void onError(ImageCaptureException exception) {
+                    public void onError(@NonNull ImageCaptureException exception) {
                         Toast.makeText(CameraCapture_Activity.this, "Error saving photo: " + exception.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -163,11 +158,9 @@ public class CameraCapture_Activity extends AppCompatActivity {
         if (count == 0) {
             Toast.makeText(CameraCapture_Activity.this, "Not photo found", Toast.LENGTH_SHORT).show();
         } else {
-
             if (currentIndex == count) {
                 currentIndex = 0;
-            }
-            else if (currentIndex < 0) {
+            } else if (currentIndex < 0) {
                 currentIndex = count - 1;
             }
             final String imagePath = imageAbsolutePaths.get(currentIndex);
@@ -179,7 +172,7 @@ public class CameraCapture_Activity extends AppCompatActivity {
     }
 
     private List<String> getImageAbsolutePaths() {
-        final List<String> paths = new ArrayList();
+        final ArrayList paths = new ArrayList();
         final Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         final String[] projection = {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
